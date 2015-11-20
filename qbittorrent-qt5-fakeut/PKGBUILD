@@ -1,0 +1,70 @@
+# Maintainer: Aetf
+# Contributor: anex
+# Contributor: Sevenseven
+# Contributor: Ner0
+
+pkgname=qbittorrent-qt5-git
+pkgver=3.3.0.6290
+pkgrel=1
+pkgdesc="A bittorrent client written in C++ / Qt5 using the good libtorrent library"
+arch=('i686' 'x86_64')
+url="http://www.qbittorrent.org/"
+license=('GPL')
+depends=('qt5-base' 'libtorrent-rasterbar>=1.0.0' 'hicolor-icon-theme' 'desktop-file-utils')
+makedepends=('git' 'boost' 'qt5-tools')
+optdepends=('python: needed for search')
+conflicts=('qbittorrent')
+provides=('qbittorrent')
+install=qbittorrent.install
+source=('git://github.com/qbittorrent/qBittorrent.git'
+        'fake-ut-peerid-and-ua.patch'
+        )
+sha256sums=('SKIP'
+         '94b8f037668306e4b8a7c77151393f0b8557122672cd1d0d35190ac6ddaeb4df'
+         )
+options=(debug)
+
+pkgver() {
+    cd qBittorrent
+    #echo $(cat version.pri | grep -o '[0-9]..*[0-9]').$(git rev-list --count master)
+    awk '/^VER_MAJOR/{X=$NF}/^VER_MINOR/{Y=$NF}/^VER_BUGFIX/{Z=$NF}END{printf "%d.%d.%d.",X, Y, Z}'\
+        version.pri
+    git rev-list --count master
+}
+
+prepare() {
+    cd qBittorrent
+    # Spoof uTorrent [ change to 'no' to disable ]
+    _utspoof='yes'
+
+    for p in ${source[@]}; do
+        case "$p" in
+            fake-ut-peerid-and-ua.patch )
+                if [ $_utspoof = 'yes' ]; then
+                    msg2 "Applying fake-ut-peerid-and-ua.patch"
+                    patch -p1 < ../fake-ut-peerid-and-ua.patch
+                fi
+            ;;
+            *.patch )
+                msg2 "Applying $p"
+                patch -p1 < ../$p
+            ;;
+            * )
+                # skip
+            ;;
+        esac
+    done
+}
+
+build() {
+  cd qBittorrent
+  ./configure --prefix=/usr \
+              --with-qt5 \
+              --enable-debug
+  make
+}
+
+package() {
+  cd qBittorrent
+  make INSTALL_ROOT="$pkgdir/" install
+}
