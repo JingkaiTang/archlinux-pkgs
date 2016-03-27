@@ -4,7 +4,7 @@
 # Contributor: Ner0
 
 pkgname=qbittorrent-qt5-git
-pkgver=3.3.0.6290
+pkgver=3.4.0.6465
 pkgrel=1
 pkgdesc="A bittorrent client written in C++ / Qt5 using the good libtorrent library"
 arch=('i686' 'x86_64')
@@ -20,7 +20,7 @@ source=('git://github.com/qbittorrent/qBittorrent.git'
         'fake-ut-peerid-and-ua.patch'
         )
 sha256sums=('SKIP'
-         '94b8f037668306e4b8a7c77151393f0b8557122672cd1d0d35190ac6ddaeb4df'
+         'SKIP'
          )
 options=(debug)
 

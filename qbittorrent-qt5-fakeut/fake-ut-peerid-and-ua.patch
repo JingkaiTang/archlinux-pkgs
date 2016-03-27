@@ -1,33 +1,30 @@
-diff --git a/src/core/bittorrent/session.cpp b/src/core/bittorrent/session.cpp
-index e0458dc..6cbb430 100644
---- a/src/core/bittorrent/session.cpp
-+++ b/src/core/bittorrent/session.cpp
-@@ -87,7 +87,8 @@ using namespace BitTorrent;
+diff --git a/src/base/bittorrent/session.cpp b/src/base/bittorrent/session.cpp
+index 899a6e2..3e4adc7 100644
+--- a/src/base/bittorrent/session.cpp
++++ b/src/base/bittorrent/session.cpp
+@@ -88,7 +88,7 @@ using namespace BitTorrent;
  #include "torrenthandle.h"
  #include "session.h"
  
 -static const char PEER_ID[] = "qB";
-+// static const char PEER_ID[] = "qB";
 +static const char PEER_ID[] = "UT";
  static const char RESUME_FOLDER[] = "BT_backup";
  
  namespace libt = libtorrent;
-@@ -156,7 +157,8 @@ Session::Session(QObject *parent)
+@@ -145,7 +145,7 @@ Session::Session(QObject *parent)
      // Creating BitTorrent session
  
      // Construct session
 -    libt::fingerprint fingerprint(PEER_ID, VERSION_MAJOR, VERSION_MINOR, VERSION_BUGFIX, VERSION_BUILD);
-+    // libt::fingerprint fingerprint(PEER_ID, VERSION_MAJOR, VERSION_MINOR, VERSION_BUGFIX, VERSION_BUILD);
 +    libt::fingerprint fingerprint(PEER_ID, 3, 3, 0, 0);
-     m_nativeSession = new libt::session(fingerprint, 0);
-     Logger::instance()->addMessage(tr("Peer ID: ") + Utils::String::fromStdString(fingerprint.to_string()));
- 
-@@ -350,7 +352,8 @@ void Session::setSessionSettings()
+     const unsigned short port = pref->getSessionPort();
+     std::pair<int,int> ports(port, port);
+     const QString ip = getListeningIPs().first();
+@@ -311,7 +311,7 @@ void Session::setSessionSettings()
      Logger* const logger = Logger::instance();
  
      libt::session_settings sessionSettings = m_nativeSession->settings();
 -    sessionSettings.user_agent = "qBittorrent " VERSION;
-+    //sessionSettings.user_agent = "qBittorrent " VERSION;
 +    sessionSettings.user_agent = "uTorrent/3300(29667)";
      //std::cout << "HTTP User-Agent is " << sessionSettings.user_agent << std::endl;
      logger->addMessage(tr("HTTP User-Agent is '%1'").arg(Utils::String::fromStdString(sessionSettings.user_agent)));
