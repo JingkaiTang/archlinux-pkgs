@@ -4,7 +4,7 @@
 # Contributor: Ner0
 
 pkgname=qbittorrent-qt5-git
-pkgver=3.4.0.6465
+pkgver=3.4.0.6990
 pkgrel=1
 pkgdesc="A bittorrent client written in C++ / Qt5 using the good libtorrent library"
 arch=('i686' 'x86_64')

@@ -1,30 +1,32 @@
 diff --git a/src/base/bittorrent/session.cpp b/src/base/bittorrent/session.cpp
-index 899a6e2..3e4adc7 100644
+index 68d427d..5fc6f04 100644
 --- a/src/base/bittorrent/session.cpp
 +++ b/src/base/bittorrent/session.cpp
-@@ -88,7 +88,7 @@ using namespace BitTorrent;
- #include "torrenthandle.h"
- #include "session.h"
+@@ -85,7 +85,7 @@
+ #include "tracker.h"
+ #include "trackerentry.h"
  
 -static const char PEER_ID[] = "qB";
 +static const char PEER_ID[] = "UT";
  static const char RESUME_FOLDER[] = "BT_backup";
  
  namespace libt = libtorrent;
-@@ -145,7 +145,7 @@ Session::Session(QObject *parent)
+@@ -198,7 +198,8 @@ Session::Session(QObject *parent)
      // Creating BitTorrent session
  
      // Construct session
 -    libt::fingerprint fingerprint(PEER_ID, VERSION_MAJOR, VERSION_MINOR, VERSION_BUGFIX, VERSION_BUILD);
++    // libt::fingerprint fingerprint(PEER_ID, VERSION_MAJOR, VERSION_MINOR, VERSION_BUGFIX, VERSION_BUILD);
 +    libt::fingerprint fingerprint(PEER_ID, 3, 3, 0, 0);
      const unsigned short port = pref->getSessionPort();
      std::pair<int,int> ports(port, port);
      const QString ip = getListeningIPs().first();
-@@ -311,7 +311,7 @@ void Session::setSessionSettings()
+@@ -596,7 +597,8 @@ void Session::setSessionSettings()
      Logger* const logger = Logger::instance();
  
      libt::session_settings sessionSettings = m_nativeSession->settings();
 -    sessionSettings.user_agent = "qBittorrent " VERSION;
++    // sessionSettings.user_agent = "qBittorrent " VERSION;
 +    sessionSettings.user_agent = "uTorrent/3300(29667)";
      //std::cout << "HTTP User-Agent is " << sessionSettings.user_agent << std::endl;
      logger->addMessage(tr("HTTP User-Agent is '%1'").arg(Utils::String::fromStdString(sessionSettings.user_agent)));
