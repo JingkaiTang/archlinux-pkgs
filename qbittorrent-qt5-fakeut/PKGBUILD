@@ -4,7 +4,7 @@
 # Contributor: Ner0
 
 pkgname=qbittorrent-qt5-git
-pkgver=3.4.0.6990
+pkgver=3.3.7.7136
 pkgrel=1
 pkgdesc="A bittorrent client written in C++ / Qt5 using the good libtorrent library"
 arch=('i686' 'x86_64')
@@ -16,13 +16,8 @@ optdepends=('python: needed for search')
 conflicts=('qbittorrent')
 provides=('qbittorrent')
 install=qbittorrent.install
-source=('git://github.com/qbittorrent/qBittorrent.git'
-        'fake-ut-peerid-and-ua.patch'
-        )
-sha256sums=('SKIP'
-         'SKIP'
-         )
-options=(debug)
+source=('git://github.com/qbittorrent/qBittorrent.git')
+sha256sums=('SKIP')
 
 pkgver() {
     cd qBittorrent
@@ -33,34 +28,17 @@ pkgver() {
 }
 
 prepare() {
-    cd qBittorrent
-    # Spoof uTorrent [ change to 'no' to disable ]
-    _utspoof='yes'
-
-    for p in ${source[@]}; do
-        case "$p" in
-            fake-ut-peerid-and-ua.patch )
-                if [ $_utspoof = 'yes' ]; then
-                    msg2 "Applying fake-ut-peerid-and-ua.patch"
-                    patch -p1 < ../fake-ut-peerid-and-ua.patch
-                fi
-            ;;
-            *.patch )
-                msg2 "Applying $p"
-                patch -p1 < ../$p
-            ;;
-            * )
-                # skip
-            ;;
-        esac
-    done
+  cd qBittorrent
+  git checkout release-3.3.7
+  sed -i 's/\(static const char PEER_ID\[\] = "\)qB\(";\)/\1UT\2/' src/base/bittorrent/session.cpp
+  sed -i 's/\(libt::fingerprint fingerprint(PEER_ID, \)VERSION_MAJOR, VERSION_MINOR, VERSION_BUGFIX, VERSION_BUILD\();\)/\13, 3, 0, 0\2/' src/base/bittorrent/session.cpp
+  sed -i 's/\(sessionSettings.user_agent = \)"qBittorrent " VERSION\(;\)/\1"uTorrent\/3300(29667)"\2/' src/base/bittorrent/session.cpp
 }
 
 build() {
   cd qBittorrent
   ./configure --prefix=/usr \
-              --with-qt5 \
-              --enable-debug
+              --with-qt5
   make
 }
 
