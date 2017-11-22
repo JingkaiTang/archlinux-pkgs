@@ -1,12 +1,14 @@
-# Maintainer: Aetf
+# Maintainer: Jingkai Tang
+# Contributor: Aetf
 # Contributor: anex
 # Contributor: Sevenseven
 # Contributor: Ner0
 
-pkgname=qbittorrent-qt5-git
-pkgver=3.3.7.7808
+pkgname=qbittorrent-qt5-fakeut
+pkgver=3.3.7.8168
 pkgrel=1
-pkgdesc="A bittorrent client written in C++ / Qt5 using the good libtorrent library"
+git_tag="release-3.3.7"
+pkgdesc="A bittorrent client written in C++ / Qt5 using the good libtorrent library, patch with μtorrent user agent"
 arch=('i686' 'x86_64')
 url="http://www.qbittorrent.org/"
 license=('GPL')
@@ -21,7 +23,6 @@ sha256sums=('SKIP')
 
 pkgver() {
     cd qBittorrent
-    #echo $(cat version.pri | grep -o '[0-9]..*[0-9]').$(git rev-list --count master)
     awk '/^VER_MAJOR/{X=$NF}/^VER_MINOR/{Y=$NF}/^VER_BUGFIX/{Z=$NF}END{printf "%d.%d.%d.",X, Y, Z}'\
         version.pri
     git rev-list --count master
@@ -29,10 +30,10 @@ pkgver() {
 
 prepare() {
   cd qBittorrent
-  git checkout release-3.3.7
-  sed -i 's/\(static const char PEER_ID\[\] = "\)qB\(";\)/\1UT\2/' src/base/bittorrent/session.cpp
-  sed -i 's/\(libt::fingerprint fingerprint(PEER_ID, \)VERSION_MAJOR, VERSION_MINOR, VERSION_BUGFIX, VERSION_BUILD\();\)/\13, 3, 0, 0\2/' src/base/bittorrent/session.cpp
-  sed -i 's/\(sessionSettings.user_agent = \)"qBittorrent " VERSION\(;\)/\1"uTorrent\/3300(29667)"\2/' src/base/bittorrent/session.cpp
+  git checkout $git_tag
+  sed -i 's/^.*static const char PEER_ID.*$/static const char PEER_ID[] = "UT";/' src/base/bittorrent/session.cpp
+  sed -i 's/^.*libt::fingerprint fingerprint.*$/libt::fingerprint fingerprint(PEER_ID, 3, 3, 0, 0);/' src/base/bittorrent/session.cpp
+  sed -i 's/^.*sessionSettings.user_agent =.*$/sessionSettings.user_agent = "uTorrent\/3300(29667)";/' src/base/bittorrent/session.cpp
 }
 
 build() {
